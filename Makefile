@@ -12,7 +12,7 @@ ifeq ($(UNAME), Darwin)
 	CXXFLAGS += -stdlib=libc++
 endif
 
-EXE    := $(BINDIR)/eeZGmumu
+EXE    := $(BINDIR)/eeZGmumu $(BINDIR)/ppZGmumu
 EXESRC := $(patsubst $(BINDIR)/%,$(SRCDIR)/%.cc,$(EXE))
 EXEOBJ := $(EXESRC:.cc=.o)
 LIB    := $(LIBDIR)/libPartonMC.a
@@ -20,12 +20,16 @@ LIBSRC := $(filter-out $(EXESRC),$(wildcard $(SRCDIR)/*.cc))
 LIBOBJ := $(LIBSRC:.cc=.o)
 HEAD   := $(filter-out $(EXESRC:.cc=.h),$(wildcard $(SRCDIR)/*.h))
 
+# LHAPDF (http://lhapdf.hepforge.org/)
+CXXFLAGS += $(shell lhapdf-config --cflags)
+LIBS     += $(shell lhapdf-config --libs)
+
 .PHONY: all build clean
 
-all: $(BINDIR)/eeZGmumu
+all: $(EXE)
 
-$(BINDIR)/eeZGmumu: $(SRCDIR)/eeZGmumu.o build $(LIB)
-	$(CXX) $(LDFLAGS) -o $@ $< $(LIB)
+$(BINDIR)/%: $(SRCDIR)/%.o build $(LIB)
+	$(CXX) $(LDFLAGS) -o $@ $< $(LIB) $(LIBS)
 
 $(LIBDIR)/libPartonMC.a: CXXFLAGS += -fPIC
 $(LIBDIR)/libPartonMC.a: $(LIBOBJ)
