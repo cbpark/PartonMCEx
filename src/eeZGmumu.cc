@@ -22,7 +22,7 @@ double dsigma(const double costh);
 int main(int argc, char *argv[]) {
     const std::string appname("eeZGmumu");
     if (argc != 2) {
-        std::cerr << "Usage: " << appname << " nevent\n";
+        std::cerr << "Usage: " << appname << " <nevent>\n";
         return 1;
     }
 
@@ -82,7 +82,7 @@ int main(int argc, char *argv[]) {
         pmc::printProgress(iev, nev);
 
         double costh = pmc::costh(DELTATH);  // random costh
-        double w = dsigma(costh) * DELTATH;     // phase space point
+        double w = dsigma(costh) * DELTATH;  // phase space point
         double prob = w / w_max;
 
         // accept the event if the random number is less than the probability of

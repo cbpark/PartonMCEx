@@ -1,7 +1,7 @@
 SRCDIR   := src
 BINDIR   := bin
 LIBDIR   := lib
-CXXFLAGS := -g -O2 -Wall -Wextra -pipe -std=c++14 -pedantic -I$(SRCDIR)
+CXXFLAGS := -g -O2 -Wall -Wextra -std=c++14 -pedantic -I$(SRCDIR)
 LDFLAGS  :=
 AR       := ar crs
 MKDIR    := mkdir -p
