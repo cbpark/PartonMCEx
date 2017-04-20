@@ -43,6 +43,10 @@ public:
 
     double delta() const { return rho2_ - rho1_; }
 
+    /*
+     * |d\tau / d\rho| = M * Gamma * sec^2\rho / s,
+     * where s is the proton-proton CM energy.
+     */
     double jacobian(const double val) const {
         const double cosrho = std::cos(val);
         return mtr_ * gtr_ / (cosrho * cosrho * s_);

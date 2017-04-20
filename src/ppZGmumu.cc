@@ -3,10 +3,12 @@
 #include <iostream>
 #include <memory>
 #include <string>
-// #include "LHAPDF/Info.h"  // for LHAPDF::getConfig
+#include <utility>
+#include "LHAPDF/Info.h"  // for LHAPDF::getConfig
 #include "LHAPDF/LHAPDF.h"
 #include "constants.h"
 #include "hadrons.h"
+#include "momentum.h"
 #include "utils.h"
 
 const int N = 1000000;
@@ -39,13 +41,12 @@ int main(int argc, char *argv[]) {
     double sum_w = 0, sum_w_sq = 0;  // for the variance
     double w_max = 0;
     double costh_max = -2;
-    double q_max = -1;
 
     const double s = eCM * eCM;
     const pmc::Rho rho = pmc::Rho(QMIN, MTR, GTR, s);
 
-    // LHAPDF::Info &cfg = LHAPDF::getConfig();
-    // cfg.set_entry("Verbosity", 0);  // make lhapdf quiet
+    LHAPDF::Info &cfg = LHAPDF::getConfig();
+    cfg.set_entry("Verbosity", 0);  // make lhapdf quiet
     std::shared_ptr<LHAPDF::PDF> pdf(LHAPDF::mkPDF("cteq6l1"));
 
     std::cout << "-- Integrating for cross section and getting maximum ...\n";
@@ -62,14 +63,12 @@ int main(int argc, char *argv[]) {
 
         // calculate the phase space point
         double w = weight(pdf, hats, MU, x1, x2, costh) * DELTATH *
-                   rho.delta() * qin.delta_y() * rho.jacobian(rho_val) /
-                   (x1 * x2);
+                   rho.delta() * qin.delta_y() * rho.jacobian(rho_val);
         sum_w += w;  // add to the sums
         sum_w_sq += w * w;
         if (w > w_max) {  // check if higher than maximum
             w_max = w;
             costh_max = costh;
-            q_max = std::sqrt(hats);
         }
     }
 
@@ -91,6 +90,62 @@ int main(int argc, char *argv[]) {
      *
      * We must boost from the CM frame to LAB frame.
      */
+    std::cout << "-- Generating events ...\n";
+    const int nev = std::atoi(argv[2]);
+
+    int iev = 0;  // counter for event generation
+    while (iev < nev) {
+        pmc::printProgress(iev, nev);
+
+        double costh = pmc::costh(DELTATH);   // random costh
+        double rho_val = pmc::rhoValue(rho);  // random rho
+        double hats = rho.hats(rho_val);
+        double sqrt_hats = std::sqrt(hats);
+
+        pmc::InitQuark qin = pmc::InitQuark(s, hats);
+        double x1 = qin.x1(), x2 = qin.x2();
+        double w = weight(pdf, hats, MU, x1, x2, costh) * DELTATH *
+                   rho.delta() * qin.delta_y() * rho.jacobian(rho_val) /
+                   (x1 * x2);
+        double prob = w / w_max;
+
+        // accept the event if the random number is less than the probability of
+        // the phase space point
+        double r = pmc::getRandom();
+        if (r < prob) {
+            ++iev;
+            std::cout << "---- event (" << iev << ")    \n";
+
+            double phi = pmc::phi();  // generate random phi
+            double sinphi = std::sin(phi);
+            double cosphi = std::cos(phi);
+            double sinth = std::sqrt(1.0 - costh * costh);
+
+            pmc::Particles ps;
+
+            // quark momenta at the LAB frame.
+            pmc::FourMomentum pq1(1, 0, 0, 1);
+            pq1.scale(0.5 * x1 * eCM);
+            ps.push_back(std::make_pair("q1", pq1));
+            pmc::FourMomentum pq2(1, 0, 0, -1);
+            pq2.scale(0.5 * x2 * eCM);
+            ps.push_back(std::make_pair("q2", pq2));
+
+            // muon momenta at the CM frame.
+            pmc::FourMomentum pmm(1, sinth * cosphi, sinth * sinphi, costh);
+            pmm.scale(0.5 * sqrt_hats);
+            pmc::FourMomentum pmp(1, -sinth * cosphi, -sinth * sinphi, -costh);
+            pmp.scale(0.5 * sqrt_hats);
+            // boost to the LAB frame.
+            double beta = (x2 - x1) / (x2 + x1);
+            pmm = boostz(pmm, beta);
+            pmp = boostz(pmp, beta);
+            ps.push_back(std::make_pair("mu-", pmm));
+            ps.push_back(std::make_pair("mu+", pmp));
+
+            pmc::printMomenta(ps);
+        }
+    }
 }
 
 double dsigma(const double costh, const double hats, const pmc::Qtype typ) {
@@ -146,5 +201,5 @@ double weight(std::shared_ptr<LHAPDF::PDF> pdf, const double hats,
          (pdf->xfxQ(-1, x1, mu) * pdf->xfxQ(1, x2, mu) +
           pdf->xfxQ(-3, x1, mu) * pdf->xfxQ(3, x2, mu));
 
-    return w;
+    return w / (x1 * x2);  // xfxQ is x * f(x, Q^2)
 }

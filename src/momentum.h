@@ -29,6 +29,8 @@ public:
     }
 
     friend std::ostream &operator<<(std::ostream &os, const FourMomentum &p);
+
+    friend FourMomentum boostz(const FourMomentum &p, const double beta);
 };
 
 using Particle = std::pair<std::string, FourMomentum>;
