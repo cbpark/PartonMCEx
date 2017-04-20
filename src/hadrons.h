@@ -59,10 +59,10 @@ public:
         return mtr_ * gtr_ * std::tan(val) + mtr_ * mtr_;
     }
 
-    friend double rho_value(const Rho &rho);
+    friend double rhoValue(const Rho &rho);
 };
 
-inline double rho_value(const Rho &rho) {
+inline double rhoValue(const Rho &rho) {
     return rho.rho1_ + getRandom() * (rho.rho2_ - rho.rho1_);
 }
 }  // namespace pmc

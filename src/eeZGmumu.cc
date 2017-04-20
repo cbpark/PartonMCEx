@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
         pmc::printProgress(i, N);
 
         // random costh
-        double costh = -1.0 + pmc::getRandom() * DELTATH;
+        double costh = pmc::costh(DELTATH);
         // calculate the phase space point
         double w = dsigma(costh) * DELTATH;
         sum_w += w;  // add to the sums
@@ -81,8 +81,8 @@ int main(int argc, char *argv[]) {
     while (iev < nev) {
         pmc::printProgress(iev, nev);
 
-        double costh = -1.0 + pmc::getRandom() * DELTATH;  // random costh
-        double w = dsigma(costh) * DELTATH;                // phase space point
+        double costh = pmc::costh(DELTATH);  // random costh
+        double w = dsigma(costh) * DELTATH;     // phase space point
         double prob = w / w_max;
 
         // accept the event if the random number is less than the probability of
@@ -93,7 +93,7 @@ int main(int argc, char *argv[]) {
             std::cout << "---- event (" << iev << ")    \n";
             ps_costh.push_back(costh);
 
-            double phi = pmc::getRandom() * 2 * PI;  // generate random phi
+            double phi = pmc::phi();  // generate random phi
             double sinphi = std::sin(phi);
             double cosphi = std::cos(phi);
             double sinth = std::sqrt(1.0 - costh * costh);

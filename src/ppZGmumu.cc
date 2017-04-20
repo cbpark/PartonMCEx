@@ -24,7 +24,7 @@ double weight(std::shared_ptr<LHAPDF::PDF> pdf, const double hats,
 int main(int argc, char *argv[]) {
     std::string appname("ppZGmumu");
     if (argc != 3) {
-        std::cerr << "Usage: " << appname << " ecm nevent\n";
+        std::cerr << "Usage: " << appname << " <ECM in GeV> <nevent>\n";
         return 1;
     }
 
@@ -53,8 +53,8 @@ int main(int argc, char *argv[]) {
         pmc::printProgress(i, N);
 
         // random costh and rho
-        double costh = -1.0 + pmc::getRandom() * DELTATH;
-        double rho_val = pmc::rho_value(rho);
+        double costh = pmc::costh(DELTATH);
+        double rho_val = pmc::rhoValue(rho);
         double hats = rho.hats(rho_val);
 
         pmc::InitQuark qin = pmc::InitQuark(s, hats);
