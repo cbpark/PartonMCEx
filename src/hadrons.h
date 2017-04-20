@@ -30,7 +30,6 @@ public:
 class Rho {
 private:
     double rho1_, rho2_;
-
     double mtr_, gtr_, s_;
 
 public:
@@ -42,8 +41,6 @@ public:
         rho2_ = std::atan((s_ - mtr_ * mtr_) / gm);
     }
 
-    double s() const { return s_; }
-
     double delta() const { return rho2_ - rho1_; }
 
     double jacobian(const double val) const {
@@ -51,9 +48,7 @@ public:
         return mtr_ * gtr_ / (cosrho * cosrho * s_);
     }
 
-    double qscale(const double val) const {
-        return std::sqrt(hats(val));
-    }
+    double qscale(const double val) const { return std::sqrt(hats(val)); }
 
     double hats(const double val) const {
         return mtr_ * gtr_ * std::tan(val) + mtr_ * mtr_;
