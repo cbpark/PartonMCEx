@@ -10,6 +10,7 @@ UNAME    := $(shell uname -s)
 
 ifeq ($(UNAME), Darwin)
 	CXXFLAGS += -stdlib=libc++
+	CXXFLAGS += -Wno-unused-local-typedef
 endif
 
 EXE    := $(BINDIR)/eeZGmumu $(BINDIR)/ppZGmumu
