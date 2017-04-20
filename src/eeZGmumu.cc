@@ -116,11 +116,6 @@ int main(int argc, char *argv[]) {
     }
 }
 
-double fBreitWigner(const double hats) {
-    const double hats2 = hats - MZ2;
-    return 1.0 / (hats2 * hats2 + GAMMAZ2 * MZ2);
-}
-
 double dsigma(const double costh) {
     const double cV = -0.5 + 2 * SW2;
     const double cV2 = cV * cV;
@@ -129,7 +124,7 @@ double dsigma(const double costh) {
 
     const double kappa = std::sqrt(2) * GF * MZ2 / (4 * PI * ALPHA);
 
-    const double fBW = fBreitWigner(HATS);
+    const double fBW = pmc::fBreitWignerZ(HATS);
     const double chi1 = kappa * HATS * (HATS - MZ2) * fBW;
     const double chi2 = kappa * kappa * HATS * HATS * fBW;
 
