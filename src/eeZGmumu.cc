@@ -16,9 +16,6 @@ const double HATS = ECM * ECM;
 /** number of integration points */
 const int N = 1000000;
 
-/** Range of costh. 1 - (-1) = 2. */
-const double DELTA = 2;
-
 /** The differential cross section for e+e- --> Z/gamma --> mu+mu- */
 double dsigma(const double costh);
 
@@ -45,9 +42,9 @@ int main(int argc, char *argv[]) {
         pmc::printProgress(i, N);
 
         // random costh
-        double costh = -1.0 + pmc::getRandom() * DELTA;
+        double costh = -1.0 + pmc::getRandom() * DELTATH;
         // calculate the phase space point
-        double w = dsigma(costh) * DELTA;
+        double w = dsigma(costh) * DELTATH;
         sum_w += w;  // add to the sums
         sum_w_sq += w * w;
         if (w > w_max) {  // check if higher than maximum
@@ -84,8 +81,8 @@ int main(int argc, char *argv[]) {
     while (iev < nev) {
         pmc::printProgress(iev, nev);
 
-        double costh = -1.0 + pmc::getRandom() * DELTA;  // random costh
-        double w = dsigma(costh) * DELTA;                // phase space point
+        double costh = -1.0 + pmc::getRandom() * DELTATH;  // random costh
+        double w = dsigma(costh) * DELTATH;                // phase space point
         double prob = w / w_max;
 
         // accept the event if the random number is less than the probability of

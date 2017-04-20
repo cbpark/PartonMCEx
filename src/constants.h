@@ -23,4 +23,7 @@ const double SW2 = 0.222246;
 
 const double PI = 3.141592653589793238463;
 
+/** Range of costh. 1 - (-1) = 2. */
+const double DELTATH = 2;
+
 #endif  // SRC_CONSTANTS_H_
