@@ -24,7 +24,7 @@ private:
     double pz_;
 
 public:
-    FourMomentum() = delete;
+    FourMomentum() = default;
     FourMomentum(const double e, const double px, const double py,
                  const double pz)
         : e_(e), px_(px), py_(py), pz_(pz) {}

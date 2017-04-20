@@ -17,6 +17,7 @@
 #include "constants.h"
 #include "hadrons.h"
 #include "momentum.h"
+#include "process.h"
 #include "utils.h"
 
 const int N = 1000000;
@@ -95,7 +96,6 @@ int main(int argc, char *argv[]) {
 
     /*
      * Second step: we generate events
-     *
      * We must boost from the CM frame to LAB frame.
      */
     std::cout << "-- Generating events ...\n";
@@ -123,26 +123,21 @@ int main(int argc, char *argv[]) {
         if (r < prob) {
             ++iev;
             std::cout << "---- event (" << iev << ")    \n";
-
-            double phi = pmc::phi();  // generate random phi
-            double sinphi = std::sin(phi);
-            double cosphi = std::cos(phi);
-            double sinth = std::sqrt(1.0 - costh * costh);
-
+            pmc::Process proc = pmc::Process(costh);
             pmc::Particles ps;
 
             // quark momenta at the LAB frame.
-            pmc::FourMomentum pq1(1, 0, 0, 1);
+            pmc::FourMomentum pq1 = proc.mothers()[0];
             pq1.scale(0.5 * x1 * eCM);
             ps.push_back(std::make_pair("q1", pq1));
-            pmc::FourMomentum pq2(1, 0, 0, -1);
+            pmc::FourMomentum pq2 = proc.mothers()[1];
             pq2.scale(0.5 * x2 * eCM);
             ps.push_back(std::make_pair("q2", pq2));
 
             // muon momenta at the CM frame.
-            pmc::FourMomentum pmm(1, sinth * cosphi, sinth * sinphi, costh);
+            pmc::FourMomentum pmm = proc.daughters()[0];
             pmm.scale(0.5 * sqrt_hats);
-            pmc::FourMomentum pmp(1, -sinth * cosphi, -sinth * sinphi, -costh);
+            pmc::FourMomentum pmp = proc.daughters()[1];
             pmp.scale(0.5 * sqrt_hats);
             // boost to the LAB frame.
             double beta = (x2 - x1) / (x2 + x1);
@@ -209,5 +204,5 @@ double weight(std::shared_ptr<LHAPDF::PDF> pdf, const double hats,
          (pdf->xfxQ(-1, x1, mu) * pdf->xfxQ(1, x2, mu) +
           pdf->xfxQ(-3, x1, mu) * pdf->xfxQ(3, x2, mu));
 
-    return w / (x1 * x2);  // xfxQ is x * f(x, Q^2)
+    return w / (x1 * x2);  // since xfxQ is x * f(x, Q^2)
 }

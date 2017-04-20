@@ -12,9 +12,9 @@
 #include <memory>
 #include <string>
 #include <utility>
-#include <vector>
 #include "constants.h"
 #include "momentum.h"
+#include "process.h"
 #include "utils.h"
 
 /** CM energy in GeV */
@@ -82,7 +82,6 @@ int main(int argc, char *argv[]) {
      */
     std::cout << "-- Generating events ...\n";
     const int nev = std::atoi(argv[1]);
-    std::vector<double> ps_costh;
     const double ecm_half = ECM / 2;
 
     int iev = 0;  // counter for event generation
@@ -99,22 +98,14 @@ int main(int argc, char *argv[]) {
         if (r < prob) {
             ++iev;
             std::cout << "---- event (" << iev << ")    \n";
-            ps_costh.push_back(costh);
-
-            double phi = pmc::phi();  // generate random phi
-            double sinphi = std::sin(phi);
-            double cosphi = std::cos(phi);
-            double sinth = std::sqrt(1.0 - costh * costh);
+            pmc::Process proc = pmc::Process(costh);
 
             auto ps = std::make_unique<pmc::Particles>();
-            pmc::FourMomentum pem(1, 0, 0, 1);
-            ps->push_back(std::make_pair("e-", pem));
-            pmc::FourMomentum pep(1, 0, 0, -1);
-            ps->push_back(std::make_pair("e+", pep));
-            pmc::FourMomentum pmm(1, sinth * cosphi, sinth * sinphi, costh);
-            ps->push_back(std::make_pair("mu-", pmm));
-            pmc::FourMomentum pmp(1, -sinth * cosphi, -sinth * sinphi, -costh);
-            ps->push_back(std::make_pair("mu+", pmp));
+            ps->push_back(std::make_pair("e-", proc.mothers()[0]));
+            ps->push_back(std::make_pair("e+", proc.mothers()[1]));
+            ps->push_back(std::make_pair("mu-", proc.daughters()[0]));
+            ps->push_back(std::make_pair("mu+", proc.daughters()[1]));
+
             auto ps_scaled = pmc::scaleMomenta(std::move(ps), ecm_half);
             pmc::printMomenta(ps_scaled);
         }
