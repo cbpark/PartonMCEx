@@ -1,7 +1,7 @@
 /*
  *  Copyright (C) 2017 Chan Beom Park <cbpark@gmail.com>
  *
- *  This file is part of partonMCex, which is released under the GNU General
+ *  This file is part of PartonMCEx, which is released under the GNU General
  *  Public License. See file LICENSE in the top directory of this project or
  *  go to <http://www.gnu.org/licenses/> for full license details.
  */
@@ -21,6 +21,7 @@
 #include "utils.h"
 
 const int N = 1000000;
+const std::string PDFNAME = "cteq6l1";
 const double QMIN = 60.0;
 const double MTR = QMIN;
 const double GTR = QMIN;
@@ -56,7 +57,7 @@ int main(int argc, char *argv[]) {
 
     LHAPDF::Info &cfg = LHAPDF::getConfig();
     cfg.set_entry("Verbosity", 0);  // make lhapdf quiet
-    std::shared_ptr<LHAPDF::PDF> pdf(LHAPDF::mkPDF("cteq6l1"));
+    std::shared_ptr<LHAPDF::PDF> pdf(LHAPDF::mkPDF(PDFNAME));
 
     std::cout << "-- Integrating for cross section and getting maximum ...\n";
     for (int i = 0; i != N; ++i) {

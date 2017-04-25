@@ -1,3 +1,4 @@
+PKGNAME  := PartonMCEx
 SRCDIR   := src
 BINDIR   := bin
 LIBDIR   := lib
@@ -16,7 +17,7 @@ endif
 EXE    := $(BINDIR)/eeZGmumu $(BINDIR)/ppZGmumu
 EXESRC := $(patsubst $(BINDIR)/%,$(SRCDIR)/%.cc,$(EXE))
 EXEOBJ := $(EXESRC:.cc=.o)
-LIB    := $(LIBDIR)/libPartonMC.a
+LIB    := $(LIBDIR)/lib$(PKGNAME).a
 LIBSRC := $(filter-out $(EXESRC),$(wildcard $(SRCDIR)/*.cc))
 LIBOBJ := $(LIBSRC:.cc=.o)
 HEAD   := $(filter-out $(EXESRC:.cc=.h),$(wildcard $(SRCDIR)/*.h))
@@ -30,10 +31,10 @@ LIBS     += $(shell lhapdf-config --libs)
 all: $(EXE)
 
 $(BINDIR)/%: $(SRCDIR)/%.o build $(LIB)
-	$(CXX) $(LDFLAGS) -o $@ $< $(LIB) $(LIBS)
+	$(CXX) $(LDFLAGS) -o $@ $< -L$(LIBDIR) -l$(PKGNAME) $(LIBS)
 
-$(LIBDIR)/libPartonMC.a: CXXFLAGS += -fPIC
-$(LIBDIR)/libPartonMC.a: $(LIBOBJ)
+$(LIB): CXXFLAGS += -fPIC
+$(LIB): $(LIBOBJ)
 	$(AR) $@ $^
 	ranlib $@
 
