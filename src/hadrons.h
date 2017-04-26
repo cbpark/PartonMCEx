@@ -22,7 +22,7 @@ private:
 
 public:
     InitQuark() = delete;
-    explicit InitQuark(const double s, const double hats) {
+    InitQuark(const double s, const double hats) {
         ymax_ = -0.5 * std::log(hats / s);
         const double y = (2 * getRandom() - 1.0) * ymax_;
         const double tau = hats / s;
