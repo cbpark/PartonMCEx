@@ -8,7 +8,7 @@ Solution codes for [How-to: Write a parton level Monte Carlo event generator](ht
 * [LHAPDF 6](http://lhapdf.hepforge.org/) and the `cteq6l1` PDF data. The version of LHAPDF can be checked by `lhapdf-config --version`. The `cteq6l1` data can be installed by
 
 ``` shell
-lhapdf-config install cteq6l1
+lhapdf install cteq6l1
 ```
 
 ## Usage and example outputs
