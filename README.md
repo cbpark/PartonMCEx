@@ -35,12 +35,12 @@ mu+: e = 45, px = 1.71321, py = -33.4487, pz = 30.0541
 ** p p --> Z/gamma --> mu+ mu- (ECM = 8000 GeV)
 -- Integrating for cross section and getting maximum ...
 ---- Done integrating.
----- Maximum value of dsigma = 0.000103069, found at costh = 0.988781
----- Total cross section = 881.83 +- 3.13955 pb
+---- Maximum value of dsigma = 0.000102818, found at costh = -0.988461
+---- Total cross section = 881.66 +- 3.14382 pb
 -- Generating events ...
 ---- event (1)
-q1: e = 12.8947, px = 0, py = 0, pz = 12.8947
-q2: e = 118.277, px = 0, py = 0, pz = -118.277
-mu-: e = 71.0425, px = 26.5751, py = -28.3295, pz = -59.4832
-mu+: e = 60.1293, px = -26.5751, py = 28.3295, pz = -45.8992
+q1: e = 3.22691, px = 0, py = 0, pz = 3.22691
+q2: e = 632.64, px = 0, py = 0, pz = -632.64
+mu-: e = 479.244, px = 36.0371, py = -14.3681, pz = -477.671
+mu+: e = 156.623, px = -36.0371, py = 14.3681, pz = -151.742
 ```

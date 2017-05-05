@@ -114,8 +114,7 @@ int main(int argc, char *argv[]) {
         pmc::InitQuark qin = pmc::InitQuark(s, hats);
         double x1 = qin.x1(), x2 = qin.x2();
         double w = weight(pdf, hats, MU, x1, x2, costh) * DELTATH *
-                   rho.delta() * qin.delta_y() * rho.jacobian(rho_val) /
-                   (x1 * x2);
+                   rho.delta() * qin.delta_y() * rho.jacobian(rho_val);
         double prob = w / w_max;
 
         // accept the event if the random number is less than the probability of
